@@ -3,7 +3,7 @@ import numpy as np
 import random
 
 
-def generate_captcha_text(length=6):
+def generate_captcha_text(length=random.randint(6, 9)):
     chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
     return "".join(random.choices(chars, k=length))
 
@@ -81,3 +81,4 @@ def generate_captcha():
         f.write(text)
 
     return text
+
