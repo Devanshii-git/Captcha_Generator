@@ -37,14 +37,18 @@ class CaptchaHandler(SimpleHTTPRequestHandler):
         except Exception as e:
             self.send_error(500, f"Internal Server Error: {str(e)}")
 
-            if user_input == correct_captcha:
-                response = """
-                <h1 style='text-align:center;font-family:sans-serif;color:green;'>CAPTCHA is correct!</h1>
-                """
-            else:
-                # Generate a new CAPTCHA if the user gets it wrong
-                new_captcha_text = generate_captcha()
-                print(f"New CAPTCHA generated: {new_captcha_text}")
+             def handle_captcha_submission(self):
+        """ Handles CAPTCHA validation. """
+        query = urlparse(self.path).query
+        params = parse_qs(query)
+        user_input = params.get("captchaInput", [""])[0].strip()
+
+        try:
+            with open("captcha_text.txt", "r") as f:
+                correct_captcha = f.read().strip()
+        except FileNotFoundError:
+            self.send_json({"success": False, "message": "CAPTCHA not found. Please refresh."})
+            return
 
                 response = """
                 <h1 style='text-align:center;font-family:sans-serif;color:red;'>CAPTCHA is incorrect!</h1>
