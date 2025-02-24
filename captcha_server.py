@@ -18,12 +18,15 @@ class CaptchaHandler(SimpleHTTPRequestHandler):
         else:
             self.send_error(404, "File Not Found")
 
-        elif self.path == "/captcha.png":
-            self.send_response(200)
-            self.send_header("Content-type", "image/png")
-            self.end_headers()
-            with open("captcha.png", "rb") as f:
-                self.wfile.write(f.read())
+        def serve_file(self, filename, content_type, binary=False):
+        """ Serves static files correctly with proper encoding. """
+        try:
+            if binary:
+                with open(filename, "rb") as f:
+                    content = f.read()
+            else:
+                with open(filename, "r", encoding="utf-8") as f:  # Force UTF-8 encoding
+                    content = f.read().encode()
 
         elif self.path.startswith("/submit"):
             query = urlparse(self.path).query
