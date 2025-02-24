@@ -64,9 +64,7 @@ class CaptchaHandler(SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    # Generate the first CAPTCHA
-    captcha_text = generate_captcha()
-    print(f"Generated CAPTCHA: {captcha_text}")
+
 
     server_address = ("", 8000)
     httpd = HTTPServer(server_address, CaptchaHandler)
