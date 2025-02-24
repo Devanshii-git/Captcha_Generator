@@ -32,10 +32,7 @@ class CaptchaHandler(SimpleHTTPRequestHandler):
             self.send_header("Content-type", content_type)
             self.end_headers()
             self.wfile.write(content)
-        except FileNotFoundError:
-            self.send_error(404, f"File {filename} not found")
-        except Exception as e:
-            self.send_error(500, f"Internal Server Error: {str(e)}")
+        
 
              def handle_captcha_submission(self):
         """ Handles CAPTCHA validation. """
