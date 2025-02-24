@@ -4,12 +4,14 @@ import random
 
 
 def generate_captcha_text(length=None):
+    """Generates a random CAPTCHA text with a mix of letters, numbers, and symbols."""
     length = length or random.randint(5, 7)
     chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$&=+%"
     return "".join(random.choices(chars, k=length))
 
 
-def apply_wave_effect(image, frequency=5, amplitude=3):
+def apply_wave_effect(image, frequency=3, amplitude=2):
+    """Applies a subtle wave distortion effect for security without compromising readability."""
     width, height = image.size
     pixels = np.array(image)
 
@@ -20,7 +22,8 @@ def apply_wave_effect(image, frequency=5, amplitude=3):
     return Image.fromarray(pixels)
 
 
-def draw_random_lines(draw, width, height, num_lines=5):
+def draw_random_lines(draw, width, height, num_lines=3):
+    """Draws random lines on the CAPTCHA to prevent OCR recognition but not obscure text."""
     for _ in range(num_lines):
         draw.line(
             [(random.randint(0, width), random.randint(0, height)),
@@ -30,29 +33,32 @@ def draw_random_lines(draw, width, height, num_lines=5):
         )
 
 
-def draw_random_dots(draw, width, height, num_dots=50):
+def draw_random_dots(draw, width, height, num_dots=30):
+    """Adds fewer random dots to maintain clarity while increasing complexity."""
     for _ in range(num_dots):
         draw.point((random.randint(0, width), random.randint(0, height)), fill="black")
 
 
-def draw_distorted_text(text, font_size=50, text_color="black", padding=20):
+def draw_distorted_text(text, font_size=48, text_color="black", padding=15):
+    """Generates an image with slightly distorted but readable CAPTCHA text."""
     try:
-        font = ImageFont.truetype("times.ttf", font_size)
+        font = ImageFont.truetype("arial.ttf", font_size)  # Switched to Arial for better clarity
     except IOError:
         font = ImageFont.load_default()
 
+    # Calculate text size dynamically
     char_sizes = [font.getbbox(char)[2:4] for char in text]
-    total_width = sum(w for w, _ in char_sizes) + (len(text) - 1) * 15
-    total_height = max(h for _, h in char_sizes) + padding * 2
+    total_width = sum(w for w, _ in char_sizes) + (len(text) - 1) * 10 + 2 * padding
+    total_height = max(h for _, h in char_sizes) + 2 * padding
 
-    image = Image.new("RGBA", (total_width + padding * 2, total_height), (200, 200, 255, 255))
+    image = Image.new("RGBA", (total_width, total_height), (220, 220, 255, 255))  # Softer background color
     draw = ImageDraw.Draw(image)
 
     x_offset = padding
     for i, char in enumerate(text):
         char_width, char_height = char_sizes[i]
-        y_offset = random.randint(5, 15)
-        angle = random.randint(-10, 10)
+        y_offset = random.randint(-3, 5)  # Less vertical displacement for clarity
+        angle = random.randint(-8, 8)  # Reduced rotation for better readability
 
         char_img = Image.new("RGBA", (char_width, char_height), (0, 0, 0, 0))
         char_draw = ImageDraw.Draw(char_img)
@@ -60,24 +66,24 @@ def draw_distorted_text(text, font_size=50, text_color="black", padding=20):
         char_img = char_img.rotate(angle, expand=True)
 
         image.paste(char_img, (x_offset, padding + y_offset), char_img)
-        x_offset += char_width + random.randint(10, 15)
+        x_offset += char_width + random.randint(8, 12)  # Optimized spacing
 
     return image
 
 
 def generate_captcha():
+    """Generates a CAPTCHA image and saves it."""
     text = generate_captcha_text()
-    image = draw_distorted_text(text, font_size=50, padding=20)
+    image = draw_distorted_text(text, font_size=48, padding=15)
 
     draw = ImageDraw.Draw(image)
-    draw_random_lines(draw, image.width, image.height, num_lines=5)
-    draw_random_dots(draw, image.width, image.height, num_dots=50)
+    draw_random_lines(draw, image.width, image.height, num_lines=3)  # Fewer lines for clarity
+    draw_random_dots(draw, image.width, image.height, num_dots=30)  # Fewer dots to improve readability
 
-    captcha_image = apply_wave_effect(image)
+    captcha_image = apply_wave_effect(image, frequency=3, amplitude=2)  # Less intense wave effect
     captcha_image.convert("RGB").save("captcha.png")
 
     with open("captcha_text.txt", "w") as f:
         f.write(text)
 
     return text
-
