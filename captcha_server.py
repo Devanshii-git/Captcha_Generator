@@ -10,11 +10,13 @@ PORT = 8000
 class CaptchaHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/":
-            self.send_response(200)
-            self.send_header("Content-type", "text/html")
-            self.end_headers()
-            with open("Captcha.html", "r") as f:
-                self.wfile.write(f.read().encode())
+            self.serve_file("Captcha.html", "text/html")
+        elif self.path == "/captcha.png":
+            self.serve_file("captcha.png", "image/png", binary=True)
+        elif self.path.startswith("/submit"):
+            self.handle_captcha_submission()
+        else:
+            self.send_error(404, "File Not Found")
 
         elif self.path == "/captcha.png":
             self.send_response(200)
