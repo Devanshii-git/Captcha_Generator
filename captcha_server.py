@@ -3,8 +3,10 @@ import webbrowser
 import os
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse, parse_qs
+import json
 
-
+HOST = "localhost"
+PORT = 8000
 class CaptchaHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/":
