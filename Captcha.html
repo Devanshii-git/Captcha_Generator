@@ -3,33 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAPTCHA Entry</title>
+    <title>Growing Flowers with CAPTCHA</title>
     <style>
         body {
-            background-color: white;
-            font-family: Arial, sans-serif;
+            background-color: #87CEEB; /* Sky blue background */
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-end; /* Align items to the bottom */
             height: 100vh;
             margin: 0;
-            flex-direction: column;
+            overflow: hidden; /* Prevent scrollbars from appearing */
+            position: relative;
         }
+        .ground {
+            position: absolute;
+            bottom: 0;
+            height: 20%; /* Height of the ground */
+            width: 100%;
+            background-color: #8B4513; /* Brown color for the ground */
+        }
+        .flower {
+            position: absolute;
+            bottom: 20%; /* Start above the ground */
+            opacity: 0; /* Start invisible */
+            transform: scale(0); /* Start small */
+            animation: grow 3s ease-in-out infinite; /* Animation for growing */
+            font-size: 6rem; /* Increased size of the flowers */
+        }
+        /* Keyframes for flower growth */
+        @keyframes grow {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1; /* Become visible */
+                transform: scale(1.2); /* Slightly larger */
+            }
+            100% {
+                opacity: 0; /* Fade out */
+                transform: scale(0); /* Shrink back */
+            }
+        }
+        /* Positioning flowers at different locations */
+        .flower1 { left: 10%; animation-delay: 0s; }
+        .flower2 { left: 30%; animation-delay: 0.5s; }
+        .flower3 { left: 50%; animation-delay: 1s; }
+        .flower4 { left: 70%; animation-delay: 1.5s; }
+        .flower5 { left: 90%; animation-delay: 2s; }
+        /* CAPTCHA container */
         .captcha-container {
+            position: absolute;
+            top: 40%; /* Center vertically */
+            left: 50%; /* Center horizontally */
+            transform: translate(-50%, -50%); /* Center the box */
             text-align: center;
+            z-index: 1; /* Ensure it is above the flowers */
+            background-color: rgba(255, 255, 255, 0.8); /* Light background for visibility */
             padding: 20px;
-            border: 1px solid #ccc;
             border-radius: 10px;
-            background-color: #f9f9f9;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
-        img {
-            display: block;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            padding: 5px;
-            background-color: #e0e0e0;
-            border-radius: 5px;
+        .captcha {
+            font-size: 2rem;
+            margin: 10px 0;
         }
         input[type="text"] {
             padding: 10px;
@@ -37,7 +74,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             width: 200px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         button {
             padding: 10px 20px;
@@ -51,17 +88,47 @@
         button:hover {
             background-color: #0056b3;
         }
+        /* Monkey hanging from the CAPTCHA box */
+        .monkey {
+            position: absolute;
+            top: -30px; /* Position above the box */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Center the monkey */
+            font-size: 3rem; /* Size of the monkey */
+        }
     </style>
 </head>
 <body>
 
+    <div class="ground"></div>
+    
+    <!-- Flowers -->
+    <div class="flower flower1">🌸</div>
+    <div class="flower flower2">🌼</div>
+    <div class="flower flower3">🌻</div>
+    <div class="flower flower4">🌷</div>
+    <div class="flower flower5">🌺</div>
+
+    <!-- CAPTCHA Container -->
     <div class="captcha-container">
-        <img src="captcha.png" alt="CAPTCHA Image">
-        <form action="http://localhost:8000/submit" method="GET">
-            <input type="text" name="captchaInput" placeholder="Enter CAPTCHA">
-            <button type="submit">Submit</button>
-        </form>
+        <div class="captcha">ABCD12</div> <!-- Static CAPTCHA for demonstration -->
+        <label for="captcha-input">Enter CAPTCHA:</label>
+        <input type="text" id="captcha-input" placeholder="Enter CAPTCHA">
+        <button onclick="validateCaptcha()">Submit</button>
+        <div class="monkey">🐒</div> <!-- Monkey emoji hanging from the box -->
     </div>
+
+    <script>
+        function validateCaptcha() {
+            const input = document.getElementById('captcha-input').value;
+            const captcha = 'ABCD12'; // Static CAPTCHA for demonstration
+            if (input === captcha) {
+                alert('CAPTCHA validated successfully!');
+            } else {
+                alert('Invalid CAPTCHA. Please try again.');
+            }
+        }
+    </script>
 
 </body>
 </html>
