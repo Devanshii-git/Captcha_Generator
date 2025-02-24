@@ -28,14 +28,14 @@ class CaptchaHandler(SimpleHTTPRequestHandler):
                 with open(filename, "r", encoding="utf-8") as f:  # Force UTF-8 encoding
                     content = f.read().encode()
 
-        elif self.path.startswith("/submit"):
-            query = urlparse(self.path).query
-            params = parse_qs(query)
-            user_input = params.get("captchaInput", [""])[0].strip()
-            print(f"User entered: {user_input}")
-
-            with open("captcha_text.txt", "r") as f:
-                correct_captcha = f.read().strip()
+        self.send_response(200)
+            self.send_header("Content-type", content_type)
+            self.end_headers()
+            self.wfile.write(content)
+        except FileNotFoundError:
+            self.send_error(404, f"File {filename} not found")
+        except Exception as e:
+            self.send_error(500, f"Internal Server Error: {str(e)}")
 
             if user_input == correct_captcha:
                 response = """
